@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>@ViewBag.Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="~/Content/bootstrap.css" rel="stylesheet">
+        <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+        <link rel="stylesheet" href="//leaflet.github.io/Leaflet.draw/leaflet.draw.css" />
+    </head>
+    <body ng-app="map-app">
+        <div class="container main-container">
+            @RenderBody()
+        </div>
+        <hr />
+        <div class="footer clear">
+            <div class="container">
+                <p>&copy; Matthew Peters 2014</p>
+            </div>
+        </div>
+
+        <script src="~/Scripts/jquery-1.9.0.min.js" type="text/javascript" ></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js" type="text/javascript" ></script>
+        <script src="~/Scripts/bootstrap.min.js" type="text/javascript" ></script>
+        <script src="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+        <script src="//leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
+        <script src="~/Scripts/wicket.js" type="text/javascript" ></script>
+        <script src="~/Scripts/wicket-leaflet.js" type="text/javascript" ></script>
+
+        <!-- Angular App files -->
+        <script src="~/Scripts/app/app.js" type="text/javascript" ></script>
+        <script src="~/Scripts/app/controllers/editMapController.js" type="text/javascript" ></script>
+        <script src="~/Scripts/app/directives/angular-leaflet-directive.js" type="text/javascript" ></script>
+        <script src="~/Scripts/app/services/mapService.js" type="text/javascript" ></script>
+    </body>
+</html>

@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h1>Map App</h1>
+
+<div class="container" ng-controller="editMapController">
+
+    <leaflet defaults="leafletDefaults" center="leafletCenter" bounds="leafletBounds" markers="leafletMarkers" controls="leafletDraw" width="auto" height="700px" id="leafletMap"></leaflet>
+
+</div>
