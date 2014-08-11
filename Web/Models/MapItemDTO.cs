@@ -1,11 +1,10 @@
-﻿using System.Data.Entity.Spatial;
-
+﻿
 namespace MapApp.Web.Models
 {
-    public class MapItem
+    public class MapItemDTO
     {
         public int Id { get; set; }
         public string EntityType { get; set; }
-        public DbGeography Geolocation { get; set; }
+        public string Wkt { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using MapApp.Models;
+﻿using MapApp.Web.Models;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
