@@ -6,7 +6,7 @@ namespace MapApp.DAL
 {
     public class MapAppContext : DbContext
     {
-        public MapAppContext() : base("MapAppContext")
+        public MapAppContext() : base("name=MapAppContext")
         {
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -20,12 +21,27 @@ namespace MapApp.Web
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
+
         }
 
+        public static void RegisterWebApi(HttpConfiguration config)
+        {
+            // Web API configuration and services
+
+            // Web API routes
+            config.MapHttpAttributeRoutes();
+
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+        }
         protected void Application_Start(object sender, EventArgs e)
         {
             AreaRegistration.RegisterAllAreas();
 
+            GlobalConfiguration.Configure(RegisterWebApi);
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
         }

@@ -1,6 +1,7 @@
 ﻿using MapApp.DAL;
 using MapApp.Web.Models;
 using Microsoft.SqlServer.Types;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Spatial;
@@ -16,39 +17,46 @@ namespace MapApp.Web.Controllers
     {
         private MapAppContext db = new MapAppContext(); 
 
-        // GET api/<controller>/5
+        // GET api/MapItem/5
         [ResponseType(typeof(MapItemDTO))]
-        public async Task<IHttpActionResult> Get(int id)
+        public async Task<IHttpActionResult> GetMapItem(int id)
         {
-            var mItem = await db.MapItems.Select(mi =>
-                new MapItemDTO()
-                {
-                    Id = mi.Id,
-                    EntityType = mi.EntityType,
-                    Wkt = mi.Geolocation.WellKnownValue.WellKnownText
-                }).SingleOrDefaultAsync(b => b.Id == id);
+            var mItem = await db.MapItems.SingleOrDefaultAsync(b => b.Id == id);
+ 
             if (mItem == null)
             {
                 return NotFound();
             }
 
-            return Ok(mItem);
+            MapItemDTO dto = new MapItemDTO()
+                            {
+                                Id = mItem.Id,
+                                EntityType = mItem.EntityType,
+                                Wkt = mItem.Geolocation.WellKnownValue.WellKnownText
+                            };
+
+            return Ok(dto);
         }
 
-        public IQueryable<MapItemDTO> GetMapItems()
+        // GET: api/MapItem
+        public List<MapItemDTO> GetMapItems()
         {
-            var query = db.MapItems.Select(mi =>
-                        new MapItemDTO()
-                        {
-                            Id = mi.Id,
-                            EntityType = mi.EntityType,
-                            Wkt = mi.Geolocation.WellKnownValue.WellKnownText
-                        });
+            //Need to materialize the items ToList first otherwise we would get this exception:
+            //"The specified type member 'WellKnownValue' is not supported in LINQ to Entities. Only initializers, entity members, 
+            //and entity navigation properties are supported."
 
-            return query;
+            var dtoList = db.MapItems.ToList().Select(mi =>
+                            new MapItemDTO()
+                            {
+                                Id = mi.Id,
+                                EntityType = mi.EntityType,
+                                Wkt = mi.Geolocation.WellKnownValue.WellKnownText
+                            }).ToList();
+
+            return dtoList;
         }
 
-        // POST api/<controller>
+        // POST api/MapItem
         [ResponseType(typeof(MapItem))]
         public async Task<IHttpActionResult> Post(MapItemDTO dto)
         {
@@ -60,11 +68,11 @@ namespace MapApp.Web.Controllers
 
             db.MapItems.Add(mItem);
             await db.SaveChangesAsync();
-
+            dto.Id = mItem.Id;
             return CreatedAtRoute("DefaultApi", new { id = mItem.Id }, dto);
         }
 
-        // PUT api/<controller>/5
+        // PUT api/MapItem/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> Put(int id, MapItemDTO dto)
         {
@@ -96,10 +104,10 @@ namespace MapApp.Web.Controllers
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return StatusCode(HttpStatusCode.OK);
         }
 
-        // DELETE api/<controller>/5
+        // DELETE api/MapItem/5
         [ResponseType(typeof(MapItem))]
         public async Task<IHttpActionResult> Delete(int id)
         {
@@ -112,7 +120,7 @@ namespace MapApp.Web.Controllers
             db.MapItems.Remove(mItem);
             await db.SaveChangesAsync();
 
-            return Ok(mItem);
+            return StatusCode(HttpStatusCode.OK);
         }
 
         private DbGeography MakeValidGeographyFromText(string inputWkt)
