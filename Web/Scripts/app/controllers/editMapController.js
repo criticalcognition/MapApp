@@ -1,7 +1,6 @@
 ﻿app.controller('editMapController', ['$scope', '$http', '$log', '$window', '$timeout', 'mapService', 'leafletEvents', 'leafletData', function ($scope, $http, $log, $window, $timeout, mapService, leafletEvents, leafletData) {
 
-    $scope.shapeLayerGroup = new L.FeatureGroup();
-    $scope.wktDictionary = {};
+    var url = '/api/MapItem';
 
     //Initialize map
     $scope.leafletCenter = mapService.GetCenter();
@@ -37,18 +36,55 @@
             //Save WKT to the dictionary
             var wkt = new Wkt.Wkt();
             wkt.fromJson(layer.toGeoJSON());
-            $scope.wktDictionary[layer._leaflet_id] = wkt.write();
+
+            data = {
+                "EntityType": e.layerType,
+                "Wkt" : wkt.write()
+            }
+
+            $http.post(url, data).then(function (result) {
+                e.layer.dbId = result.data.Id;
+            });;
+        });
+
+        map.on('draw:edited', function (e) {
+            var layers = e.layers;
+            layers.eachLayer(function (layer) {
+                var idToEdit = layer.dbId;
+
+                //Get WKT
+                var wkt = new Wkt.Wkt();
+                wkt.fromJson(layer.toGeoJSON());
+
+                data = {
+                    "Id": idToEdit,
+                    "Wkt": wkt.write()
+                }
+
+                $http.put(url + "/" + idToEdit, data);
+            });
         });
 
         map.on('draw:deleted', function (e) {
-            //Remove shape from dictionary
-            angular.forEach(e.layers.getLayers(), function (value, key) {
-                delete $scope.wktDictionary[value._leaflet_id];
+            var layers = e.layers;
+            layers.eachLayer(function (layer) {
+                var idToEdit = layer.dbId;
+                var idToDelete = layer.dbId;
+
+                $http.delete(url + "/" + idToDelete);
             });
         });
     });
 
-
-
+    //Get all current objects
+    $http.get(url).then(function (result) {
+        angular.forEach(result.data, function (value, key) {
+            var wkt = new Wkt.Wkt();
+            wkt.read(value.Wkt);
+            var theLayer = wkt.toObject();
+            theLayer.dbId = value.Id;
+            $scope.drawnItems.addLayer(theLayer);
+        });
+    });
 
 }]);

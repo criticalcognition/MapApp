@@ -76,16 +76,13 @@ namespace MapApp.Web.Controllers
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> Put(int id, MapItemDTO dto)
         {
-            if (id != dto.Id)
+            MapItem mItem = await db.MapItems.FindAsync(id);
+            if (mItem == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            MapItem mItem = new MapItem() {
-                Id = dto.Id,
-                EntityType = dto.EntityType,
-                Geolocation = MakeValidGeographyFromText(dto.Wkt)
-            };
+            mItem.Geolocation = MakeValidGeographyFromText(dto.Wkt);
             db.Entry(mItem).State = EntityState.Modified;
 
             try
