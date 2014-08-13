@@ -15,13 +15,14 @@ var theTileLayer = 'http://a.tiles.mapbox.com/v3/' + mapboxApplicationKey + '/{z
 Display custom drawn shapes on a map. Store the data in a backend that can then be searched by bounds.
 
 ### Technologies Used
-[Leaflet][1]
-[Wicket][2]
-[AngularJS][3]
-[ASP.NET Web API v2][4]
-[Entity Framework v6][5]
-[SQL Server 2008 Spatial Extensions][6]
-[SQL Server Spatial Tools][7]
+
+ - [Leaflet][1]
+ - [Wicket][2] 
+ - [AngularJS][3] 
+ - [ASP.NET Web API v2][4]
+ - [Entity Framework v6][5] 
+ - [SQL Server 2008 Spatial Extensions][6] 
+ - [SQL Server Spatial Tools][7]
 
 ### Front End
 Using the open source project Leaflet was an easy choice.  It provides a great abstraction to the mapping tile provider of your choice. Getting access to the data that defines the shape was the job of the Wicket component.  The `wkt.write()` method was all that was needed to get the Well-known text of the shape.
